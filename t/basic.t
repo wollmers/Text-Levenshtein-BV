@@ -1,6 +1,9 @@
 use strict;
+use warnings;
+use utf8;
+
 use Test::More;
-use LCS;
+use Text::Levenshtein::BV;
 
 # replace with the actual test
 ok 1;

@@ -4,7 +4,8 @@ use 5.010001;
 use strict;
 use warnings;
 our $VERSION = '0.01';
-#use utf8;
+
+use utf8;
 use Data::Dumper;
 
 our $width = int 0.999+log(~0)/log(2);
@@ -21,24 +22,26 @@ sub new {
 # [Hyy03]
 # Hyyrö, Heikki. (2003).
 # A Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances.
-# Nord. J. Comput.. 10. 29-39.
-# books/LCS/hyyrroe_PSC2002_article6.pdf
+# In Nord. J. Comput. 10. 29-39.
+## books/LCS/hyyrroe_PSC2002_article6.pdf
 
-# [Hyy04a] H. Hyyroe. A Note on Bit-Parallel Alignment Computation. In
-# M. Simanek and J. Holub, editors, Stringology, pages 79-87. Department
-# of Computer Science and Engineering, Faculty of Electrical
+# [Hyy04a]
+# Hyyrö, Heikki. (2004).
+# A Note on Bit-Parallel Alignment Computation.
+# In M. Simanek and J. Holub, editors, Stringology, pages 79-87.
+# Department of Computer Science and Engineering, Faculty of Electrical
 # Engineering, Czech Technical University, 2004.
+## books/LCS/hyyroe_2004_bit_alignment_PSC2004_article7.pdf
 
-# Hyyrö, Heikki. (2004). A Note on Bit-Parallel Alignment Computation. 79-87.
-# books/LCS/hyyroe_2004_bit_alignment_PSC2004_article7.pdf
-
-# [Hyy04b] H. Hyyrö.
+# [Hyy04b]
+# Hyyrö, Heikki. (2004).
 # Bit-parallel LCS-length computation revisited.
 # In Proc. 15th Australasian Workshop on Combinatorial Algorithms (AWOCA 2004), 2004.
-# books/LCS/hyrroe_2004_bit_lcs_length.pdf
+## books/LCS/hyrroe_2004_bit_lcs_length.pdf
 
 #### Levenshtein Fig. 3
-# [HN02] H. Hyyrö and G. Navarro.
+# [HN02]
+# Hyyrö, Heikki and Navarro, Gonzalo.
 # Faster bit-parallel approximate string matching.
 # In Proc. 13th Combinatorial Pattern Matching (CPM 2002),
 # LNCS 2373, pages 203–224, 2002.
@@ -54,7 +57,7 @@ sub SES {
   my ($amin, $amax, $bmin, $bmax) = (0, $#$a, 0, $#$b);
 
 # NOTE: prefix / suffix optimisation does not work yet
-if (0) {
+if (1) {
   while ($amin <= $amax and $bmin <= $bmax and $a->[$amin] eq $b->[$bmin]) {
     $amin++;
     $bmin++;
@@ -64,11 +67,15 @@ if (0) {
     $bmax--;
   }
 }
-
+  # m = 10, 0..9, 2..7
+  #my $m = $amax - $amin +1; # 7 - 2 + 1 = 6
   my $positions;
 
-  if ($amax < $width ) {
-      $positions->{$a->[$_]} |= 1 << ($_ % $width) for $amin..$amax;
+  #if ($amax < $width ) {
+  #if ($m < $width ) {
+  if (($amax - $amin) < $width ) {
+      #$positions->{$a->[$_]} |= 1 << ($_ % $width) for $amin..$amax;
+      $positions->{$a->[$_+$amin]} |= 1 << $_  for 0..($amax-$amin);
 
       my $VPs = [];
       my $VNs = [];
@@ -78,8 +85,9 @@ if (0) {
       my ($y,$u,$X,$D0,$HN,$HP);
 
       # outer loop [HN02] Fig. 7
-      for my $j ($bmin..$bmax) {
-      	  $y = $positions->{$b->[$j]} // 0;
+      #for my $j ($bmin..$bmax) {
+      for my $j (0..($bmax - $bmin)) {
+      	  $y = $positions->{$b->[$j + $bmin]} // 0;
       	  $X = $y | $VN;
       	  $D0 = (($VP + ($X & $VP)) ^ $VP) | $X;
       	  $HN = $VP & $D0;
@@ -93,7 +101,8 @@ if (0) {
       return [
           map([$_ => $_], 0 .. ($bmin-1)),
           #@lcs,
-          backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
+          #backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
+          _backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
           map( [++$amax => $_], ($bmax+1) .. $#$b )
       ];
   }
@@ -126,14 +135,12 @@ if (0) {
 
 =cut
 
-
-
 }
 
 
 # Hyyrö, Heikki. (2004). A Note on Bit-Parallel Alignment Computation. 79-87.
 # Fig. 3
-sub backtrace {
+sub _backtrace {
     my ($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax) = @_;
 
 if (0) {
@@ -155,54 +162,125 @@ if (0) {
     #print STDERR 'backtrace $bmin: ',$bmin,"\n";
 
     # recover alignment
-    my $i = $amax;
-    my $j = $bmax;
+    #my $i = $amax;
+    my $i = $amax - $amin;
+    # my $j = $bmax;
+    my $j = $bmax - $bmin;
 
     my @lcs;
 
     #print STDERR 'backtrace $amin: ',$amin,' $bmin: ',$bmin,"\n";
-    my $step = 0;
+    #my $step = 0;
 
     my $none = '-1';
 
-    while ($i >= $amin && $j >= $bmin) {
+    #while ($i >= $amin && $j >= $bmin) {
+    while ($i >= 0 && $j >= 0) {
 
-        $step++;
+        #$step++;
 
         if ($VPs->[$j] & (1<<$i)) {
         #if (($VP & (1<<$j)) & (1<<$i)) {
             #print STDERR 'step: ',$step,'[$i,-1]',"\n";
             #unshift @lcs,[$i,-1];
-            unshift @lcs,[$i,$none];
+            #unshift @lcs,[$i,$none];
+            unshift @lcs,[$i+$amin,$none];
             $i--;
         }
         else {
-            if (($j > $bmin) && ($VNs->[$j-1] & (1<<$i))) {
-        		#if (($j > $bmin) && (($VN & (1<<$j-1)) & (1<<$i))) {
+            #if (($j > $bmin) && ($VNs->[$j-1] & (1<<$i))) {
+            if (($j > 0) && ($VNs->[$j-1] & (1<<$i))) {
+            #if (($j > $bmin) && (($VN & (1<<$j-1)) & (1<<$i))) {
             #if ($VNs->[$j-1] & (1<<$i)) {
             #print STDERR 'step: ',$step,'[-1,$j]',"\n";
         	        #unshift @lcs, [-1,$j];
-        	        unshift @lcs, [$none,$j];
+        	        #unshift @lcs, [$none,$j];
+        	        unshift @lcs, [$none,$j+$bmin];
         	        $j--;
             }
             else {
             #print STDERR 'step: ',$step,'[$i,$j]',"\n";
-                unshift @lcs, [$i,$j];
+                #unshift @lcs, [$i,$j];
+                unshift @lcs, [$i+$amin,$j+$bmin];
                 $i--;$j--;
             }
             #$i--;$j--;
         }
     }
-    while ($i >= $amin) {
-        unshift @lcs,[$i,$none];
+    #while ($i >= $amin) {
+    while ($i >= 0) {
+        unshift @lcs,[$i+$amin,$none];
         $i--;
     }
-    while ($j >= $bmin) {
-        unshift @lcs,[$none,$j];
+    #while ($j >= $bmin) {
+    while ($j >= 0) {
+        unshift @lcs,[$none,$j+$bmin];
         $j--;
     }
     #print STDERR 'backtrace @lcs: ',Dumper(\@lcs);
     return @lcs;
+}
+
+# [HN02] Fig. 3 -> Fig. 7
+sub distance {
+  my ($self, $a, $b) = @_;
+
+  my ($amin, $amax, $bmin, $bmax) = (0, $#$a, 0, $#$b);
+
+if (1) {
+  while ($amin <= $amax and $bmin <= $bmax and $a->[$amin] eq $b->[$bmin]) {
+    $amin++;
+    $bmin++;
+  }
+  while ($amin <= $amax and $bmin <= $bmax and $a->[$amax] eq $b->[$bmax]) {
+    $amax--;
+    $bmax--;
+  }
+}
+
+  my $positions;
+
+  if (($amax - $amin) < $width ) {
+      #$positions->{$a->[$_]} |= 1 << ($_ % $width) for $amin..$amax;
+      $positions->{$a->[$_+$amin]} |= 1 << $_  for 0..($amax-$amin);
+
+      #my $VPs = [];
+      #my $VNs = [];
+      #my $VP  = ~0;
+
+      my $m = $amax-$amin +1;
+      my $diff = $m;
+      #print STDERR '$m: ',$m,"\n";
+      my $m_mask = 1 << $m-1;
+      #print STDERR '$mm: ',sprintf('%064b',$m_mask),"\n";
+
+      my $VP = 0;
+      $VP  |= 1 << $_  for 0..$m-1;
+      #print STDERR '$VP: ',sprintf('%064b',$VP),"\n";
+
+      my $VN  = 0;
+
+      my ($y,$u,$X,$D0,$HN,$HP);
+
+      # outer loop [HN02] Fig. 7
+      #for my $j ($bmin..$bmax) {
+      for my $j (0..($bmax - $bmin)) {
+      	  $y = $positions->{$b->[$j + $bmin]} // 0;
+      	  $X = $y | $VN;
+      	  $D0 = (($VP + ($X & $VP)) ^ $VP) | $X;
+      	  $HN = $VP & $D0;
+      	  $HP = $VN | ~($VP|$D0);
+      	  $X  = ($HP << 1) | 1;
+      	  $VN = $X & $D0;
+      	  $VP = ($HN << 1) | ~($X | $D0);
+      	  #$VPs->[$j] = $VP;
+      	  #$VNs->[$j] = $VN;
+
+      	  if ($HP & $m_mask) { $diff++; }
+      	  if ($HN & $m_mask) { $diff--; }
+      }
+      return $diff;
+  }
 }
 
 sub sequences2hunks {
@@ -340,7 +418,7 @@ Helmut Wollmersdorfer E<lt>helmut.wollmersdorfer@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2016 by Helmut Wollmersdorfer
+Copyright 2016-2020 by Helmut Wollmersdorfer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
