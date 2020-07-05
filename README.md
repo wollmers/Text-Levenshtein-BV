@@ -1,29 +1,3 @@
-    # else { #TODO
-    elsif (0) {
-
-      $positions->{$a->[$_]}->[$_ / $width] |= 1 << ($_ % $width) for $amin..$amax;
-
-      my $S;
-      my $Vs = [];
-      my ($y,$u,$carry);
-      my $kmax = $amax / $width + 1;
-
-      # outer loop
-      for my $j ($bmin..$bmax) {
-        $carry = 0;
-
-        for (my $k=0; $k < $kmax; $k++ ) {
-          $S = ($j) ? $Vs->[$j-1]->[$k] : ~0;
-          $S //= ~0;
-          $y = $positions->{$b->[$j]}->[$k] // 0;
-          $u = $S & $y;             # [Hyy04]
-          $Vs->[$j]->[$k] = $S = ($S + $u + $carry) | ($S & ~$y);
-          $carry = (($S & $u) | (($S | $u) & ~($S + $u + $carry))) >> 63; # TODO: $width-1
-        }
-      }
-
-    }
-
 # NAME
 
 Text::Levenshtein::BV - Bit Vector (BV) implementation of the

@@ -3,7 +3,7 @@ package Text::Levenshtein::BV;
 
 use strict;
 use warnings;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 ##use standard; # experimental from Guacamole
 
@@ -14,7 +14,7 @@ use 5.010001;
 #require Exporter;
 
 #BEGIN {
-#    $Text::Levenshtein::BV::VERSION     = '0.01';
+#    $Text::Levenshtein::BV::VERSION     = '0.02';
 #    @Text::Levenshtein::BV::ISA         = qw(Exporter);
 #    @Text::Levenshtein::BV::EXPORT      = qw();
 #    @Text::Levenshtein::BV::EXPORT_OK
