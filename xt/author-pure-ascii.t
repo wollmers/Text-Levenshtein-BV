@@ -12,7 +12,8 @@ BEGIN {
 
 use Test::More;
 
-eval "use Test::PureASCII";
+#eval "use Test::PureASCII";
+eval { use Test::PureASCII; };
 if ( $@ ) {
   plan skip_all => 'Test::PureASCII required for testing POD';
 }

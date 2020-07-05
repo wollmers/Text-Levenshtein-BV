@@ -12,7 +12,8 @@ BEGIN {
 
 use Test::More;
 
-eval "use Test::Spelling";
+#eval "use Test::Spelling";
+eval { use Test::Spelling; };
 if ( $@ ) {
   plan skip_all => 'Test::Spelling required for testing POD';
 }
@@ -23,6 +24,9 @@ else {
      BV
      Subsequence
      wordsize
+     Levenshtein
+     SES
+     Reformats
   ));
   all_pod_files_spelling_ok();
 }

@@ -1,11 +1,29 @@
 package Text::Levenshtein::BV;
 
-use 5.010001;
+
 use strict;
 use warnings;
 our $VERSION = '0.01';
 
+##use standard; # experimental from Guacamole
+
 use utf8;
+
+use 5.010001;
+
+#require Exporter;
+
+#BEGIN {
+#    $Text::Levenshtein::BV::VERSION     = '0.01';
+#    @Text::Levenshtein::BV::ISA         = qw(Exporter);
+#    @Text::Levenshtein::BV::EXPORT      = qw();
+#    @Text::Levenshtein::BV::EXPORT_OK
+#        = qw(SES distance sequences2hunks hunks2sequences sequence2char);
+#    %Text::Levenshtein::BV::EXPORT_TAGS = (
+#        'all' => [qw(SES distance sequences2hunks hunks2sequences sequence2char)],
+#    );
+#}
+
 use Data::Dumper;
 
 our $width = int 0.999+log(~0)/log(2);
@@ -19,33 +37,7 @@ sub new {
   bless @_ ? @_ > 1 ? {@_} : {%{$_[0]}} : {}, ref $class || $class;
 }
 
-# [Hyy03]
-# Hyyrö, Heikki. (2003).
-# A Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances.
-# In Nord. J. Comput. 10. 29-39.
-## books/LCS/hyyrroe_PSC2002_article6.pdf
 
-# [Hyy04a]
-# Hyyrö, Heikki. (2004).
-# A Note on Bit-Parallel Alignment Computation.
-# In M. Simanek and J. Holub, editors, Stringology, pages 79-87.
-# Department of Computer Science and Engineering, Faculty of Electrical
-# Engineering, Czech Technical University, 2004.
-## books/LCS/hyyroe_2004_bit_alignment_PSC2004_article7.pdf
-
-# [Hyy04b]
-# Hyyrö, Heikki. (2004).
-# Bit-parallel LCS-length computation revisited.
-# In Proc. 15th Australasian Workshop on Combinatorial Algorithms (AWOCA 2004), 2004.
-## books/LCS/hyrroe_2004_bit_lcs_length.pdf
-
-#### Levenshtein Fig. 3
-# [HN02]
-# Hyyrö, Heikki and Navarro, Gonzalo.
-# Faster bit-parallel approximate string matching.
-# In Proc. 13th Combinatorial Pattern Matching (CPM 2002),
-# LNCS 2373, pages 203–224, 2002.
-# books/LCS/hyrroe_navarro_2002_cpm02.2.pdf
 
 
 sub SES {
@@ -87,28 +79,30 @@ if (1) {
       # outer loop [HN02] Fig. 7
       #for my $j ($bmin..$bmax) {
       for my $j (0..($bmax - $bmin)) {
-      	  $y = $positions->{$b->[$j + $bmin]} // 0;
-      	  $X = $y | $VN;
-      	  $D0 = (($VP + ($X & $VP)) ^ $VP) | $X;
-      	  $HN = $VP & $D0;
-      	  $HP = $VN | ~($VP|$D0);
-      	  $X  = ($HP << 1) | 1;
-      	  $VN = $X & $D0;
-      	  $VP = ($HN << 1) | ~($X | $D0);
-      	  $VPs->[$j] = $VP;
-      	  $VNs->[$j] = $VN;
+          $y = $positions->{$b->[$j + $bmin]} // 0;
+          $X = $y | $VN;
+          $D0 = (($VP + ($X & $VP)) ^ $VP) | $X;
+          $HN = $VP & $D0;
+          $HP = $VN | ~($VP|$D0);
+          $X  = ($HP << 1) | 1;
+          $VN = $X & $D0;
+          $VP = ($HN << 1) | ~($X | $D0);
+          $VPs->[$j] = $VP;
+          $VNs->[$j] = $VN;
       }
       return [
-          map([$_ => $_], 0 .. ($bmin-1)),
+          map { [$_ => $_] } 0 .. ($bmin-1) ,
           #@lcs,
           #backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
           _backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
-          map( [++$amax => $_], ($bmax+1) .. $#$b )
+          map { [++$amax => $_] } ($bmax+1) .. $#$b
       ];
   }
 
 =pod
-  else {
+
+  # else { #TODO
+  elsif (0) {
 
     $positions->{$a->[$_]}->[$_ / $width] |= 1 << ($_ % $width) for $amin..$amax;
 
@@ -193,10 +187,10 @@ if (0) {
             #if (($j > $bmin) && (($VN & (1<<$j-1)) & (1<<$i))) {
             #if ($VNs->[$j-1] & (1<<$i)) {
             #print STDERR 'step: ',$step,'[-1,$j]',"\n";
-        	        #unshift @lcs, [-1,$j];
-        	        #unshift @lcs, [$none,$j];
-        	        unshift @lcs, [$none,$j+$bmin];
-        	        $j--;
+                  #unshift @lcs, [-1,$j];
+                  #unshift @lcs, [$none,$j];
+                  unshift @lcs, [$none,$j+$bmin];
+                  $j--;
             }
             else {
             #print STDERR 'step: ',$step,'[$i,$j]',"\n";
@@ -265,19 +259,19 @@ if (1) {
       # outer loop [HN02] Fig. 7
       #for my $j ($bmin..$bmax) {
       for my $j (0..($bmax - $bmin)) {
-      	  $y = $positions->{$b->[$j + $bmin]} // 0;
-      	  $X = $y | $VN;
-      	  $D0 = (($VP + ($X & $VP)) ^ $VP) | $X;
-      	  $HN = $VP & $D0;
-      	  $HP = $VN | ~($VP|$D0);
-      	  $X  = ($HP << 1) | 1;
-      	  $VN = $X & $D0;
-      	  $VP = ($HN << 1) | ~($X | $D0);
-      	  #$VPs->[$j] = $VP;
-      	  #$VNs->[$j] = $VN;
+          $y = $positions->{$b->[$j + $bmin]} // 0;
+          $X = $y | $VN;
+          $D0 = (($VP + ($X & $VP)) ^ $VP) | $X;
+          $HN = $VP & $D0;
+          $HP = $VN | ~($VP|$D0);
+          $X  = ($HP << 1) | 1;
+          $VN = $X & $D0;
+          $VP = ($HN << 1) | ~($X | $D0);
+          #$VPs->[$j] = $VP;
+          #$VNs->[$j] = $VN;
 
-      	  if ($HP & $m_mask) { $diff++; }
-      	  if ($HN & $m_mask) { $diff--; }
+          if ($HP & $m_mask) { $diff++; }
+          if ($HN & $m_mask) { $diff--; }
       }
       return $diff;
   }
@@ -318,32 +312,11 @@ sub sequence2char {
 
 1;
 
-=pod
-  var VP = ~0;
-  var VN = 0;
-  var diff = a.length;
-
-  var VPs = [];
-  var VNs = [];
-  var y;
-  var u;
-
-  // [HN02] Fig. 3 -> Fig. 7
-  for (var j = bmin; j <= bmax; j++) {
-      y = (b.charAt(j) in positions) ? positions[b.charAt(j)] : 0;
-      X = y | VN;
-      D0 = ((VP + (X & VP)) ^ VP) | X;
-      HN = VP & D0;
-      HP = VN | ~(VP|D0);
-      X  = (HP << 1) | 1;
-      VN = X & D0;
-      VP = (HN << 1) | ~(X | D0);
-      VPs[j] = VP;
-      VNs[j] = VN;
-  }
-=cut
-
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -396,19 +369,74 @@ Finds a Shortest Edit Script (SES), taking two arrayrefs as method
 arguments. It returns an array reference of corresponding
 indices, which are represented by 2-element array refs.
 
+=item distance(\@a,\@b)
+
+Calculates the edit distance, taking two arrayrefs as method
+arguments. It returns an integer.
+
+=item hunks2sequences(\@alignment)
+
+Reformats the alignment returned by SES into an array of two sequences.
+
+=item sequence2char(\@a)
+
+Renders an array of strings into a string.
+
+=item sequences2hunks(\@a,\@b)
+
+Does the revers of method hunks2sequences.
+
 =back
 
 =head2 EXPORT
 
 None by design.
 
+=head1 STABILITY
+
+Until release of version 1.00 the included methods, names of methods and their
+interfaces are subject to change.
+
+Beginning with version 1.00 the specification will be stable, i.e. not changed between
+major versions.
+
+=head1 REFERENCES
+
+[Hyy03]
+Hyyrö, Heikki. (2003).
+A Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances.
+In Nord. J. Comput. 10. 29-39.
+
+[Hyy04a]
+Hyyrö, Heikki. (2004).
+A Note on Bit-Parallel Alignment Computation.
+In M. Simanek and J. Holub, editors, Stringology, pages 79-87.
+Department of Computer Science and Engineering, Faculty of Electrical
+Engineering, Czech Technical University, 2004.
+
+[Hyy04b]
+Hyyrö, Heikki. (2004).
+Bit-parallel LCS-length computation revisited.
+In Proc. 15th Australasian Workshop on Combinatorial Algorithms (AWOCA 2004), 2004.
+
+[HN02]
+Hyyrö, Heikki and Navarro, Gonzalo.
+Faster bit-parallel approximate string matching.
+In Proc. 13th Combinatorial Pattern Matching (CPM 2002),
+LNCS 2373, pages 203–224, 2002.
+
+
 =head1 SEE ALSO
 
-Text::Levenshtein
+L<Text::Levenshtein>
+
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/wollmers/Text-Levenshtein-BV>
 
 =head1 AUTHOR
 
-Helmut Wollmersdorfer E<lt>helmut.wollmersdorfer@gmail.comE<gt>
+Helmut Wollmersdorfer E<lt>helmut@wollmersdorfer.atE<gt>
 
 =begin html
 
@@ -424,3 +452,32 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
+
+# [Hyy03]
+# Hyyrö, Heikki. (2003).
+# A Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances.
+# In Nord. J. Comput. 10. 29-39.
+## books/LCS/hyyrroe_PSC2002_article6.pdf
+
+# [Hyy04a]
+# Hyyrö, Heikki. (2004).
+# A Note on Bit-Parallel Alignment Computation.
+# In M. Simanek and J. Holub, editors, Stringology, pages 79-87.
+# Department of Computer Science and Engineering, Faculty of Electrical
+# Engineering, Czech Technical University, 2004.
+## books/LCS/hyyroe_2004_bit_alignment_PSC2004_article7.pdf
+
+# [Hyy04b]
+# Hyyrö, Heikki. (2004).
+# Bit-parallel LCS-length computation revisited.
+# In Proc. 15th Australasian Workshop on Combinatorial Algorithms (AWOCA 2004), 2004.
+## books/LCS/hyrroe_2004_bit_lcs_length.pdf
+
+#### [HN02] Levenshtein Fig. 3
+# [HN02]
+# Hyyrö, Heikki and Navarro, Gonzalo.
+# Faster bit-parallel approximate string matching.
+# In Proc. 13th Combinatorial Pattern Matching (CPM 2002),
+# LNCS 2373, pages 203–224, 2002.
+# books/LCS/hyrroe_navarro_2002_cpm02.2.pdf
+

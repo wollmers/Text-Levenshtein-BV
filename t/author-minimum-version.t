@@ -12,7 +12,8 @@ BEGIN {
 
 use Test::More;
 
-eval "use Test::MinimumVersion";
+#eval "use Test::MinimumVersion";
+eval { use Test::MinimumVersion; };
 if ( $@ ) {
   plan skip_all => 'Test::MinimumVersion required for testing POD';
 }

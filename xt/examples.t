@@ -1,5 +1,5 @@
 #!perl
-use 5.008;
+##use 5.008;
 
 use strict;
 use warnings;
@@ -28,14 +28,14 @@ my $diff = $ses->distance($a,$b);
 print STDERR '$diff: ',$diff,"\n";
 }
 
-if (0) {
+if (1) {
 my $a = [split('','Choerephon')];
 my $b = [split('','Chrerrplzon')];
 my $align = $ses->SES($a,$b);
 print STDERR '$align: ',Dumper($align);
 }
 
-if (0) {
+if (1) {
 my $a = [split('','Choerephon')];
 my $b = [split('','Chrerrplzon')];
 my $diff = $ses->distance($a,$b);
@@ -56,7 +56,7 @@ if (0) {
     # 58812/s with prefix/suffix optimisation
 }
 
-if (1) {
+if (0) {
     my $a = [split('','Choerephon')];
     my $b = [split('','Chrerrplzon')];
 
@@ -75,7 +75,7 @@ if (0) {
     $ses->SES($a,$b);
 }
 
-if (1) {
+if (0) {
     use Text::Levenshtein qw(distance);
 
     my $iters = 10000;
@@ -87,7 +87,7 @@ if (1) {
     # 5008/s
 }
 
-if (1) {
+if (0) {
     use Text::Levenshtein::XS qw/distance/;
 
     my $iters = 100000;
@@ -98,7 +98,7 @@ if (1) {
     print 'Text::Levenshtein::XS->distance ',$rate,"\n";
     # 1876066/s
 }
-if (1) {
+if (0) {
     use Text::LevenshteinXS qw/distance/;
 
     my $iters = 100000;

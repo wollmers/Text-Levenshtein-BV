@@ -12,7 +12,8 @@ BEGIN {
 
 use Test::More;
 
-eval "use Test::Pod::Coverage";
+#eval "use Test::Pod::Coverage";
+eval { use Test::Pod::Coverage; };
 if ( $@ ) {
   plan skip_all => 'Test::Pod::Coverage required for testing POD';
 }
