@@ -1,4 +1,6 @@
 Revision history for Text::Levenshtein::BV
 
 {{$NEXT}}
+
+0.01  2020-07-05 10:36:41 CEST
         - Initial release
