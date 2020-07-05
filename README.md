@@ -1,4 +1,5 @@
-    else {
+    # else { #TODO
+    elsif (0) {
 
       $positions->{$a->[$_]}->[$_ / $width] |= 1 << ($_ % $width) for $amin..$amax;
 
@@ -21,29 +22,6 @@
         }
       }
 
-    }
-
-    var VP = ~0;
-    var VN = 0;
-    var diff = a.length;
-
-    var VPs = [];
-    var VNs = [];
-    var y;
-    var u;
-
-    // [HN02] Fig. 3 -> Fig. 7
-    for (var j = bmin; j <= bmax; j++) {
-        y = (b.charAt(j) in positions) ? positions[b.charAt(j)] : 0;
-        X = y | VN;
-        D0 = ((VP + (X & VP)) ^ VP) | X;
-        HN = VP & D0;
-        HP = VN | ~(VP|D0);
-        X  = (HP << 1) | 1;
-        VN = X & D0;
-        VP = (HN << 1) | ~(X | D0);
-        VPs[j] = VP;
-        VNs[j] = VN;
     }
 
 # NAME
@@ -109,13 +87,50 @@ is faster in most cases than the naive implementation using a match matrix.
 
 None by design.
 
+# STABILITY
+
+Until release of version 1.00 the included methods, names of methods and their
+interfaces are subject to change.
+
+Beginning with version 1.00 the specification will be stable, i.e. not changed between
+major versions.
+
+# REFERENCES
+
+\[Hyy03\]
+Hyyrö, Heikki. (2003).
+A Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances.
+In Nord. J. Comput. 10. 29-39.
+
+\[Hyy04a\]
+Hyyrö, Heikki. (2004).
+A Note on Bit-Parallel Alignment Computation.
+In M. Simanek and J. Holub, editors, Stringology, pages 79-87.
+Department of Computer Science and Engineering, Faculty of Electrical
+Engineering, Czech Technical University, 2004.
+
+\[Hyy04b\]
+Hyyrö, Heikki. (2004).
+Bit-parallel LCS-length computation revisited.
+In Proc. 15th Australasian Workshop on Combinatorial Algorithms (AWOCA 2004), 2004.
+
+\[HN02\]
+Hyyrö, Heikki and Navarro, Gonzalo.
+Faster bit-parallel approximate string matching.
+In Proc. 13th Combinatorial Pattern Matching (CPM 2002),
+LNCS 2373, pages 203–224, 2002.
+
 # SEE ALSO
 
-Text::Levenshtein
+[Text::Levenshtein](https://metacpan.org/pod/Text%3A%3ALevenshtein)
+
+# SOURCE REPOSITORY
+
+[http://github.com/wollmers/Text-Levenshtein-BV](http://github.com/wollmers/Text-Levenshtein-BV)
 
 # AUTHOR
 
-Helmut Wollmersdorfer <helmut.wollmersdorfer@gmail.com>
+Helmut Wollmersdorfer <helmut@wollmersdorfer.at>
 
 <div>
     <a href='http://cpants.cpanauthors.org/author/wollmers'><img src='http://cpants.cpanauthors.org/author/wollmers.png' alt='Kwalitee Score' /></a>
@@ -127,23 +142,3 @@ Copyright 2016-2020 by Helmut Wollmersdorfer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
-
-# POD ERRORS
-
-Hey! **The above document had some coding errors, which are explained below:**
-
-- Around line 104:
-
-    '=item' outside of any '=over'
-
-- Around line 111:
-
-    '=item' outside of any '=over'
-
-- Around line 117:
-
-    '=item' outside of any '=over'
-
-- Around line 123:
-
-    '=item' outside of any '=over'
