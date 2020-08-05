@@ -43,13 +43,10 @@ sub new {
 sub SES {
   my ($self, $a, $b) = @_;
 
-  #print STDERR 'SES $a: ',Dumper($a),"\n";
-  #print STDERR 'SES $b: ',Dumper($b),"\n";
-
   my ($amin, $amax, $bmin, $bmax) = (0, $#$a, 0, $#$b);
 
 # NOTE: prefix / suffix optimisation does not work yet
-if (1) {
+if (0) {
   while ($amin <= $amax and $bmin <= $bmax and $a->[$amin] eq $b->[$bmin]) {
     $amin++;
     $bmin++;
@@ -91,11 +88,11 @@ if (1) {
           $VNs->[$j] = $VN;
       }
       return [
-          map { [$_ => $_] } 0 .. ($bmin-1) ,
+          #map { [$_ => $_] } 0 .. ($bmin-1) ,
           #@lcs,
           #backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
           _backtrace($VPs, $VNs,$VP, $VN, $amin, $amax, $bmin, $bmax),
-          map { [++$amax => $_] } ($bmax+1) .. $#$b
+          #map { [++$amax => $_] } ($bmax+1) .. $#$b
       ];
   }
 
@@ -159,7 +156,7 @@ if (0) {
     # my $j = $bmax;
     my $j = $bmax - $bmin;
 
-    my @lcs;
+    my @lcs = ();
 
     #print STDERR 'backtrace $amin: ',$amin,' $bmin: ',$bmin,"\n";
     #my $step = 0;
@@ -210,6 +207,7 @@ if (0) {
         $j--;
     }
     #print STDERR 'backtrace @lcs: ',Dumper(\@lcs);
+    #print STDERR 'backtrace [@lcs]: ',Dumper([@lcs]);
     return @lcs;
 }
 
@@ -219,17 +217,23 @@ sub distance {
 
   my ($amin, $amax, $bmin, $bmax) = (0, $#$a, 0, $#$b);
 
+  #print STDERR '$a: ',join('',@$a),' $b: ',join('',@$b),"\n";
+
 if (1) {
+  #print STDERR '$amin: ',$amin,' $amax: ',$amax,' $bmin: ',$bmin,' $bmax: ',$bmax,"\n";
   while ($amin <= $amax and $bmin <= $bmax and $a->[$amin] eq $b->[$bmin]) {
     $amin++;
     $bmin++;
   }
+  #print STDERR '$amin: ',$amin,' $amax: ',$amax,' $bmin: ',$bmin,' $bmax: ',$bmax,"\n";
   while ($amin <= $amax and $bmin <= $bmax and $a->[$amax] eq $b->[$bmax]) {
     $amax--;
     $bmax--;
   }
 }
+  if (($amax < $amin) || ($bmax < $bmin)) { return abs(@$a - @$b); }
 
+  #print STDERR '$amin: ',$amin,' $amax: ',$amax,' $bmin: ',$bmin,' $bmax: ',$bmax,"\n";
   my $positions;
 
   if (($amax - $amin) < $width ) {
@@ -306,6 +310,35 @@ sub sequence2char {
 
   return [ map { ($_ >= 0) ? $a->[$_] : $gap } @$sequence ];
 
+}
+
+sub hunks2distance {
+  my ($self, $a, $b, $hunks) = @_;
+
+  #print STDERR Dumper($hunks);
+
+  my $distance = 0;
+
+  for my $hunk (@$hunks) {
+    if (($hunk->[0] < 0) || ($hunk->[1] < 0)) { $distance++ }
+    elsif ($a->[$hunk->[0]] ne $b->[$hunk->[1]]) { $distance++ }
+  }
+  return $distance;
+}
+
+sub hunks2char {
+  my ($self, $a, $b, $hunks) = @_;
+
+  my $chars = [];
+  #print STDERR Dumper($hunks);
+
+  for my $hunk (@$hunks) {
+    my $char1 = ($hunk->[0] >= 0) ? $a->[$hunk->[0]] : '_';
+    my $char2 = ($hunk->[1] >= 0) ? $a->[$hunk->[1]] : '_';
+
+    push @$chars, [$char1,$char2];
+  }
+  return $chars;
 }
 
 1;
