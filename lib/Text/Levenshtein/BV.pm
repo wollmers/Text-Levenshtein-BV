@@ -417,6 +417,14 @@ Renders an array of strings into a string.
 
 Does the revers of method hunks2sequences.
 
+=item hunks2char(\@a,\@b,\@alignment)
+
+Returns hunks of aligned characters.
+
+=item hunks2distance(\@a,\@b,\@alignment)
+
+Calculates the distance from alignment.
+
 =back
 
 =head2 EXPORT
