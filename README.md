@@ -57,6 +57,14 @@ is faster in most cases than the naive implementation using a match matrix.
 
     Does the revers of method hunks2sequences.
 
+- hunks2char(\\@a,\\@b,\\@alignment)
+
+    Returns hunks of aligned characters.
+
+- hunks2distance(\\@a,\\@b,\\@alignment)
+
+    Calculates the distance from alignment.
+
 ## EXPORT
 
 None by design.
