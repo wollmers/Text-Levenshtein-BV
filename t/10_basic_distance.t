@@ -8,13 +8,11 @@ use utf8;
 use lib qw(../lib/);
 
 use Test::More;
-use Test::Deep;
+#use Test::Deep;
 #cmp_deeply([],any());
 
 use Text::Levenshtein::BV;
 use Text::Levenshtein qw(distance);
-
-use Data::Dumper;
 
 my $examples = [
   ['ttatc__cg',

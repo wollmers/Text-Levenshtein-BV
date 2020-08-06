@@ -14,10 +14,6 @@ use Test::More;
 use Text::Levenshtein::BV;
 use Text::Levenshtein qw(distance);
 
-use LCS::BV;
-
-use Data::Dumper;
-
 my $examples = [
   ['ttatc__cg',
    '__agcaact'],
@@ -175,9 +171,6 @@ if (1) {
 
     my $distance = distance($A,$B);
     my $hunks    = Text::Levenshtein::BV->SES(\@a,\@b);
-    my $lcs      = LCS::BV->LCS(\@a,\@b);
-    #print STDERR 'test $hunks: ',Dumper($hunks);
-    #print STDERR 'test $lcs: ',Dumper($lcs);
 
     is(
       Text::Levenshtein::BV->hunks2distance(\@a,\@b,
