@@ -1,6 +1,7 @@
 Revision history for Text::Levenshtein::BV
 
 {{$NEXT}}
+        - pass tests on 32-bit Perls
 
 0.04  2020-08-06 09:26:52 CEST
         - test dependency on Text::Levenshtein 
