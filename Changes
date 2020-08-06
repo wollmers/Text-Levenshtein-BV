@@ -1,6 +1,8 @@
 Revision history for Text::Levenshtein::BV
 
 {{$NEXT}}
+
+0.04  2020-08-06 09:26:52 CEST
         - test dependency on Text::Levenshtein 
 
 0.03  2020-08-05 20:10:31 CEST
