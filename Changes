@@ -1,6 +1,8 @@
 Revision history for Text::Levenshtein::BV
 
 {{$NEXT}}
+
+0.05  2020-08-06 15:43:31 CEST
         - pass tests on 32-bit Perls
 
 0.04  2020-08-06 09:26:52 CEST
