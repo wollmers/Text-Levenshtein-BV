@@ -112,7 +112,7 @@ if (0) {
             #map( [$_ => $_], 0 .. ($bmin-1) ) ,
             _backtrace($VPs, $VNs, $amin, $amax, $bmin, $bmax),
             #map( [++$amax => $_], ($bmax+1) .. $#$b )
-        ;
+        ];
     }
     else {
 

@@ -14,12 +14,12 @@ Text::Levenshtein::BV - Bit Vector (BV) implementation of the
 
     use Text::Levenshtein::BV;
 
-    $alg = Text::Levenshtein::BV->new;
-    @ses = $alg->SES(\@a,\@b);
+    my $lev = Text::Levenshtein::BV->new;
+    my $ses = $lev->SES(\@a,\@b);
 
 # ABSTRACT
 
-Text::Levenshtein::BV implements the Levenshtein using bit vectors and
+Text::Levenshtein::BV implements the Levenshtein algorithm using bit vectors and
 is faster in most cases than the naive implementation using a match matrix.
 
 # DESCRIPTION
@@ -55,7 +55,7 @@ is faster in most cases than the naive implementation using a match matrix.
 
 - sequences2hunks(\\@a,\\@b)
 
-    Does the revers of method hunks2sequences.
+    Does the reverse of method hunks2sequences.
 
 - hunks2char(\\@a,\\@b,\\@alignment)
 
@@ -120,7 +120,7 @@ Helmut Wollmersdorfer <helmut@wollmersdorfer.at>
 
 # COPYRIGHT AND LICENSE
 
-Copyright 2016-2020 by Helmut Wollmersdorfer
+Copyright 2016-2021 by Helmut Wollmersdorfer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
