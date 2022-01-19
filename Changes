@@ -1,6 +1,7 @@
 Revision history for Text::Levenshtein::BV
 
 {{$NEXT}}
+        - support sequence lengths > width (64 resp. 32)
 
 0.05  2020-08-06 15:43:31 CEST
         - pass tests on 32-bit Perls
