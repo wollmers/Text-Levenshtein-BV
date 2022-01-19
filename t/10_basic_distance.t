@@ -11,7 +11,6 @@ binmode(STDERR,":encoding(UTF-8)");
 use lib qw(
 ../lib/
 ./lib/
-/Users/helmut/github/perl/Levenshtein-Simple/lib
 );
 
 use Test::More;
@@ -19,10 +18,8 @@ use Test::More::UTF8;
 
 use Text::Levenshtein::BV;
 use Text::Levenshtein qw(distance);
-use Levenshtein::Simple;
-my $test = Text::Levenshtein::BV->new();
 
-my $ref  = Levenshtein::Simple->new();
+my $test = Text::Levenshtein::BV->new();
 
 my $examples = [
   [ '', ''],
