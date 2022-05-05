@@ -4,8 +4,6 @@ Text::Levenshtein::BV - Bit Vector (BV) implementation of the
                  Levenshtein Algorithm
 
 <div>
-    <a href="https://travis-ci.org/wollmers/Text-Levenshtein-BV"><img src="https://travis-ci.org/wollmers/Text-Levenshtein-BV.png" alt="LCS-BV"></a>
-    <a href='https://coveralls.io/r/wollmers/Text-Levenshtein-BV?branch=master'><img src='https://coveralls.io/repos/wollmers/Text-Levenshtein-BV/badge.png?branch=master' alt='Coverage Status' /></a>
     <a href='http://cpants.cpanauthors.org/dist/Text-Levenshtein-BV'><img src='http://cpants.cpanauthors.org/dist/Text-Levenshtein-BV.png' alt='Kwalitee Score' /></a>
     <a href="http://badge.fury.io/pl/Text-Levenshtein-BV"><img src="https://badge.fury.io/pl/Text-Levenshtein-BV.svg" alt="CPAN version" height="18"></a>
 </div>
@@ -102,6 +100,11 @@ Faster bit-parallel approximate string matching.
 In Proc. 13th Combinatorial Pattern Matching (CPM 2002),
 LNCS 2373, pages 203–224, 2002.
 
+\[Myers99\]
+Myers, Gene.
+A fast bit-vector algorithm for approximate string matching based on dynamic progamming.
+Journal of the ACM, 46(3):395–415, 1999.
+
 # SEE ALSO
 
 [Text::Levenshtein](https://metacpan.org/pod/Text%3A%3ALevenshtein)
@@ -120,7 +123,7 @@ Helmut Wollmersdorfer <helmut@wollmersdorfer.at>
 
 # COPYRIGHT AND LICENSE
 
-Copyright 2016-2021 by Helmut Wollmersdorfer
+Copyright 2016-2022 by Helmut Wollmersdorfer
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

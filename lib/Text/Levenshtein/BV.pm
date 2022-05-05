@@ -2,7 +2,7 @@ package Text::Levenshtein::BV;
 
 use strict;
 use warnings;
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 use utf8;
 
