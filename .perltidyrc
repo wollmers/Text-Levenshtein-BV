@@ -3,7 +3,8 @@
 #
 # Common parameters
 --character-encoding=utf8
---encode-output-strings=utf8
+##--encode-output-strings=utf8 # Option encode-output-strings does not take an argument
+--encode-output-strings
 --output-line-ending=unix
 --add-terminal-newline
 
@@ -13,7 +14,7 @@
 --iterations=2
 
 # Indentation Control
---maximum-line-length=80
+--maximum-line-length=90
 --indent-columns=4
 --continuation-indentation=4
 --extended-continuation-indentation # for data structures

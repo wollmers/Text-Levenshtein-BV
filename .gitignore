@@ -20,6 +20,7 @@ pm_to_blib
 *~
 *.bak
 ._*
+*.tdy
 /Text-Levenshtein-BV-*
 /.build
 /_build*
