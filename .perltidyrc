@@ -1,0 +1,42 @@
+# Formatting options for Perl::Tidy
+# 
+#
+# Common parameters
+--character-encoding=utf8
+--encode-output-strings=utf8
+--output-line-ending=unix
+--add-terminal-newline
+
+--standard-error-output
+
+# run twice for stability
+--iterations=2
+
+# Indentation Control
+--maximum-line-length=80
+--indent-columns=4
+--continuation-indentation=4
+--extended-continuation-indentation # for data structures
+
+
+--break-at-old-comma-breakpoints
+
+
+--closing-token-indentation=0 # for closing brackets
+
+# Tightness
+--vertical-tightness=2
+--brace-vertical-tightness=0
+--brace-vertical-tightness-closing=0
+
+--paren-tightness=1
+--brace-tightness=1
+--square-bracket-tightness=1
+--block-brace-tightness=1
+
+--nospace-for-semicolon
+--nooutdent-long-quotes
+--nooutdent-labels
+
+# break before all operators
+--want-break-before="% + - * / x != == >= <= =~ < > | & >= < = **= += *= &= <<= &&= -= /= |= >>= ||= .= %= ^= x="
