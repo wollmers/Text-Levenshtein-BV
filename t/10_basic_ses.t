@@ -164,15 +164,12 @@ if (1) {
     # hunks2sequences( $self, $hunks )
     my ($s1, $s2) = Text::Levenshtein::BV->hunks2sequences($ses);
 
-
     # sequences2hunks( $self, $a, $b )
     my $hunks = Text::Levenshtein::BV->sequences2hunks($s1, $s2);
-
 
     # sequence2char( $self, $a, $sequence, $gap )
     my $char1 = Text::Levenshtein::BV->sequence2char(\@a, $s1, '_');
     my $char2 = Text::Levenshtein::BV->sequence2char(\@a, $s1);
-
 
     # hunks2char( $self, $a, $b, $hunks )
     my $chars = Text::Levenshtein::BV->hunks2char(\@a, \@b, $ses);

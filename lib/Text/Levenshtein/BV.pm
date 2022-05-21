@@ -41,7 +41,7 @@ sub new {
     my $class = shift;
 
     return bless(
-        @_ ? (@_ > 1 ? {@_} : {%{$_[0]}} ) : {}, ref( $class ) || $class
+        @_ ? (@_ > 1 ? {@_} : {%{$_[0]}} ) : {}, $class
     );
 }
 
@@ -64,7 +64,9 @@ sub SES {
     }
 
     if ( ( $amax < $amin ) && ( $bmax < $bmin ) ) {
-        return [ [] ];
+        return [
+            ( map { [ $_, $_ ] } (0 .. $#{$b})  ),
+        ];
     }
     elsif ( ( $amax < $amin ) ) {
         return [
