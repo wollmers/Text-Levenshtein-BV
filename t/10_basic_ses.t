@@ -20,6 +20,7 @@ my $examples = [
   [ '', ''],
   [ 'a', ''],
   [ '', 'b'],
+  [ 'a', 'b'],
   [ 'b', 'b'],
   ['ttatc__cg',
    '__agcaact'],
@@ -29,8 +30,6 @@ my $examples = [
     'zq__cb'],
   [ 'rrp',
     'rep'],
-  [ 'a',
-    'b' ],
   [ 'aa',
     'a_' ],
   [ 'abb',
@@ -91,6 +90,10 @@ my $examples2 = [
     'abcdefghijklmnopqrstuvwxyz012345678!9!"$%&/()=?ABCDEFGHIJKLMNOPQRSTUVYZ'],
   [ 'aaabcdefghijklmnopqrstuvwxyz012345678_9!"$%&/()=?ABCDEFGHIJKLMNOPQRSTUVYZZZ',
     'a!Z'],
+  [ 'aaabcdefghijklmnopqrstuvwxyz012345678_9!"$%&/()=?ABCDEFGHIJKLMNOPQRSTUVYZZZ',
+    'a!'],
+  [ 'aaabcdefghijklmnopqrstuvwxyz012345678_9!"$%&/()=?ABCDEFGHIJKLMNOPQRSTUVYZZZ',
+    '!Z'],
 ];
 
 # prefix/suffix optimisation
@@ -110,8 +113,7 @@ my $examples3 = [
 ];
 
 if (1) {
-  for my $example (@$examples) {
-  ##for my $example ([ 'rrp','rep']) {
+  for my $example (@{$examples}) {
     my $a = $example->[0];
     my $b = $example->[1];
     my @a = $a =~ /([^_])/g;
@@ -133,6 +135,7 @@ if (1) {
     );
   }
 }
+
 
 if (1) {
   for my $example (@$examples2) {
@@ -157,7 +160,6 @@ if (1) {
     );
   }
 }
-
 
 if (1) {
   for my $example (@$examples3) {
