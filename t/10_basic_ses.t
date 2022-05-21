@@ -136,6 +136,49 @@ if (1) {
   }
 }
 
+# test formatting utilities
+if (1) {
+  for my $example (@{$examples}) {
+    my $a = $example->[0];
+    my $b = $example->[1];
+    my @a = $a =~ /([^_])/g;
+    my @b = $b =~ /([^_])/g;
+    my $A = join('',@a);
+    my $B = join('',@b);
+    my $m = scalar @a;
+    my $n = scalar @b;
+
+    my $distance = distance($A,$B);
+
+    my $ses = Text::Levenshtein::BV->SES(\@a,\@b);
+
+    # hunks2distance( $self, $a, $b, $hunks )
+    is(
+        Text::Levenshtein::BV->hunks2distance(\@a,\@b,
+        $ses
+      ),
+      $distance,
+      "[$a] m: $m, [$b] n: $n -> " . $distance
+    );
+
+    # hunks2sequences( $self, $hunks )
+    my ($s1, $s2) = Text::Levenshtein::BV->hunks2sequences($ses);
+
+
+    # sequences2hunks( $self, $a, $b )
+    my $hunks = Text::Levenshtein::BV->sequences2hunks($s1, $s2);
+
+
+    # sequence2char( $self, $a, $sequence, $gap )
+    my $char1 = Text::Levenshtein::BV->sequence2char(\@a, $s1, '_');
+    my $char2 = Text::Levenshtein::BV->sequence2char(\@a, $s1);
+
+
+    # hunks2char( $self, $a, $b, $hunks )
+    my $chars = Text::Levenshtein::BV->hunks2char(\@a, \@b, $ses);
+
+  }
+}
 
 if (1) {
   for my $example (@$examples2) {

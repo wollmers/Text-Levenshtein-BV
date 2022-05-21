@@ -6,7 +6,7 @@ our $VERSION = '0.07';
 
 use utf8;
 
-use standard;
+#use standard;
 
 use 5.010.001;
 
