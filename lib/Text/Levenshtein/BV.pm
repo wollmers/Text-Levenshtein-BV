@@ -407,8 +407,7 @@ sub hunks2distance {
     if ( scalar(@{$hunks} ) == 0) { return 0; }
 
     for my $hunk ( @{$hunks} ) {
-        if ( scalar(@{$hunk} ) == 0) { next; }
-        elsif    ( ( $hunk->[0] < 0 ) || ( $hunk->[1] < 0 ) ) { $distance++ }
+        if    ( ( $hunk->[0] < 0 ) || ( $hunk->[1] < 0 ) ) { $distance++ }
         elsif ( $a->[ $hunk->[0] ] ne $b->[ $hunk->[1] ] ) { $distance++ }
     }
     return $distance;
