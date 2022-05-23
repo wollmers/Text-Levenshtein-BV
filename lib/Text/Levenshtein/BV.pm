@@ -40,15 +40,13 @@ our @masks = (
 sub new {
     my $class = shift;
 
-    return bless(
-        @_ ? (@_ > 1 ? {@_} : {%{$_[0]}} ) : {}, $class
-    );
+    return bless( @_ ? ( @_ > 1 ? {@_} : { %{ $_[0] } } ) : {}, $class );
 }
 
 sub SES {
     my ( $self, $a, $b ) = @_;
 
-    if ( !scalar(@{$a}) && !scalar(@{$b}) ) { return [] }
+    if ( !scalar( @{$a} ) && !scalar( @{$b} ) ) { return [] }
 
     my ( $amin, $amax, $bmin, $bmax ) = ( 0, $#{$a}, 0, $#{$b} );
 
@@ -65,21 +63,21 @@ sub SES {
 
     if ( ( $amax < $amin ) && ( $bmax < $bmin ) ) {
         return [
-            ( map { [ $_, $_ ] } (0 .. $#{$b})  ),
+            ( map { [ $_, $_ ] } ( 0 .. $#{$b} ) ),
         ];
     }
     elsif ( ( $amax < $amin ) ) {
         return [
-            ( map { [ $_,      $_ ] } (0 .. ( $bmin - 1 )) ),
-            ( map { [ '-1',    $_ ] } ($bmin .. $bmax)     ),
-            ( map { [ ++$amax, $_ ] } ($bmax+1 .. $#{$b})  ),
+            ( map { [ $_,      $_ ] } ( 0 .. ( $bmin - 1 ) ) ),
+            ( map { [ '-1',    $_ ] } ( $bmin .. $bmax ) ),
+            ( map { [ ++$amax, $_ ] } ( $bmax + 1 .. $#{$b} ) ),
         ];
     }
     elsif ( ( $bmax < $bmin ) ) {
         return [
-            ( map { [ $_, $_      ] } (0 .. ( $amin - 1 )) ),
-            ( map { [ $_, '-1'    ] } ($amin .. $amax)     ),
-            ( map { [ $_, ++$bmax ] } ($amax+1  .. $#{$a}) ),
+            ( map { [ $_, $_ ] } ( 0 .. ( $amin - 1 ) ) ),
+            ( map { [ $_, '-1' ] } ( $amin .. $amax ) ),
+            ( map { [ $_, ++$bmax ] } ( $amax + 1 .. $#{$a} ) ),
         ];
     }
 
@@ -97,22 +95,22 @@ sub SES {
 
         # outer loop [HN02] Fig. 7
         for my $j ( $bmin .. $bmax ) {
-            $PM        = $positions->{ $b->[$j] } // 0;
-            $X         = $PM | $VN;
-            $D0        = ( ( $VP + ( $X & $VP ) ) ^ $VP ) | $X;
-            $HN        = $VP & $D0;
-            $HP        = $VN | ~( $VP | $D0 );
-            $X         = ( $HP << 1 ) | 1;
-            $VN        = $X & $D0;
-            $VP        = ( $HN << 1 ) | ~( $X | $D0 );
+            $PM = $positions->{ $b->[$j] } // 0;
+            $X  = $PM | $VN;
+            $D0 = ( ( $VP + ( $X & $VP ) ) ^ $VP ) | $X;
+            $HN = $VP & $D0;
+            $HP = $VN | ~( $VP | $D0 );
+            $X  = ( $HP << 1 ) | 1;
+            $VN = $X & $D0;
+            $VP = ( $HN << 1 ) | ~( $X | $D0 );
 
-            $VPs->[$j-$bmin] = $VP;
-            $VNs->[$j-$bmin] = $VN;
+            $VPs->[ $j - $bmin ] = $VP;
+            $VNs->[ $j - $bmin ] = $VN;
         }
         return [
-            ( map { [ $_, $_      ] } (0 .. ($bmin-1)) ),
+            ( map { [ $_, $_ ] } ( 0 .. ( $bmin - 1 ) ) ),
             _backtrace( $VPs, $VNs, $amin, $amax, $bmin, $bmax ),
-            ( map { [ ++$amax, $_ ] } (($bmax+1) .. $#{$b}) ),
+            ( map { [ ++$amax, $_ ] } ( ( $bmax + 1 ) .. $#{$b} ) ),
         ];
     }
     else {
@@ -160,16 +158,16 @@ sub SES {
                 $VNs[$k] = ( $X & $D0 );
                 $VPs[$k] = ( $HN << 1 ) | ($HNcarry) | ~( $X | $D0 );
 
-                $VPS->[$j-$bmin][$k] = $VPs[$k];
-                $VNS->[$j-$bmin][$k] = $VNs[$k];
+                $VPS->[ $j - $bmin ][$k] = $VPs[$k];
+                $VNS->[ $j - $bmin ][$k] = $VNs[$k];
 
                 $HNcarry = $HN >> ( $width - 1 ) & 1;
             }
         }
         return [
-            ( map { [ $_, $_      ] } (0 .. ($bmin-1)) ),
+            ( map { [ $_, $_ ] } ( 0 .. ( $bmin - 1 ) ) ),
             _backtrace2( $VPS, $VNS, $amin, $amax, $bmin, $bmax, $kmax ),
-            ( map { [ ++$amax, $_ ] } (($bmax+1) .. $#{$b}) ),
+            ( map { [ ++$amax, $_ ] } ( ( $bmax + 1 ) .. $#{$b} ) ),
         ];
     }
 }
@@ -189,13 +187,14 @@ sub _backtrace {
 
     while ( $i >= $amin && $j >= $bmin ) {
 
-        if ( $VPs->[$j-$bmin] & ( 1 << ($i-$amin) ) ) {
+        if ( $VPs->[ $j - $bmin ] & ( 1 << ( $i - $amin ) ) ) {
             unshift @ses, [ $i, $none ];
             $i--;
         }
         else {
-            if ( ( $j > $bmin  ) && ( $VNs->[ $j - $bmin - 1 ]
-                & ( 1 << ($i-$amin) ) ) ) {
+            if (   ( $j > $bmin )
+                && ( $VNs->[ $j - $bmin - 1 ] & ( 1 << ( $i - $amin ) ) ) )
+            {
                 unshift @ses, [ $none, $j ];
                 $j--;
             }
@@ -231,15 +230,18 @@ sub _backtrace2 {
     my $none = '-1';
 
     while ( $i >= $amin && $j >= $bmin ) {
-        my $k = ($i - $amin) / $width;
+        my $k = ( $i - $amin ) / $width;
 
-        if ( $VPs->[$j-$bmin]->[$k] & ( 1 << ( ($i - $amin) % $width ) ) ) {
+        if ( $VPs->[ $j - $bmin ]->[$k] & ( 1 << ( ( $i - $amin ) % $width ) ) ) {
             unshift @ses, [ $i, $none ];
             $i--;
         }
         else {
-            if ( ( $j > $bmin ) && ( $VNs->[ $j - $bmin - 1 ]->[$k]
-                & ( 1 << ( ($i - $amin) % $width ) ) ) ) {
+            if (( $j > $bmin )
+                && ( $VNs->[ $j - $bmin - 1 ]->[$k]
+                    & ( 1 << ( ( $i - $amin ) % $width ) ) )
+                )
+            {
                 unshift @ses, [ $none, $j ];
                 $j--;
             }
@@ -384,7 +386,7 @@ sub hunks2sequences {
     my $a = [];
     my $b = [];
 
-    for my $hunk (@{$hunks}) {
+    for my $hunk ( @{$hunks} ) {
         push @{$a}, $hunk->[0];
         push @{$b}, $hunk->[1];
     }
@@ -404,7 +406,7 @@ sub hunks2distance {
 
     my $distance = 0;
 
-    if ( scalar(@{$hunks} ) == 0) { return 0; }
+    if ( scalar( @{$hunks} ) == 0 ) { return 0; }
 
     for my $hunk ( @{$hunks} ) {
         if    ( ( $hunk->[0] < 0 ) || ( $hunk->[1] < 0 ) ) { $distance++ }
@@ -418,7 +420,7 @@ sub hunks2char {
 
     my $chars = [];
 
-    for my $hunk (@{$hunks}) {
+    for my $hunk ( @{$hunks} ) {
         my $char1 = ( $hunk->[0] >= 0 ) ? $a->[ $hunk->[0] ] : '_';
         my $char2 = ( $hunk->[1] >= 0 ) ? $a->[ $hunk->[1] ] : '_';
 
